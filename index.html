@@ -5,195 +5,43 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Aaron’s Glossary</title>
   <style>
-    body{font-family:system-ui,Segoe UI,Arial,sans-serif;max-width:760px;margin:24px auto;padding:0 16px}
-    header{display:flex;justify-content:space-between;align-items:center;gap:12px}
-    form{display:grid;gap:8px;margin:16px 0}
-    input,textarea{padding:10px;border:1px solid #ddd;border-radius:8px}
-    button{padding:10px 14px;border:0;border-radius:10px;cursor:pointer}
-    ul{list-style:none;padding:0}
-    li{padding:12px;border:1px solid #eee;border-radius:10px;margin:8px 0}
-    .tags{font-size:12px;color:#666}
-    :root {
-      color-scheme: light dark;
-    }
+    :root { color-scheme: light dark; }
 
-    body {
+    body{
       font-family: system-ui, Segoe UI, Arial, sans-serif;
-      max-width: 760px;
-      margin: 24px auto;
-      padding: 0 16px;
-      line-height: 1.45;
+      max-width: 760px; margin:24px auto; padding:0 16px; line-height:1.45;
     }
+    header{ display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:12px; }
+    form{ display:grid; gap:12px; margin:16px 0; }
+    input,textarea{ padding:10px; border:1px solid #ddd; border-radius:8px; font:inherit; }
+    textarea{ resize:vertical; }
+    button{ padding:10px 14px; border:0; border-radius:10px; cursor:pointer; font:inherit;
+            background:#2563eb; color:#fff; transition:transform .15s, box-shadow .15s, opacity .15s; }
+    button:hover{ transform:translateY(-1px); box-shadow:0 6px 18px rgba(37,99,235,.25); }
+    button:disabled{ opacity:.6; cursor:progress; box-shadow:none; }
+    button.secondary{ background:#e5e7eb; color:#111827; }
+    button.danger{ background:#dc2626; }
+    .form-actions{ display:flex; gap:8px; justify-content:flex-end; }
+    .header-actions{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+    .sr-only{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden;
+              clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+    #search{ margin:12px 0; }
+    #tagFilters{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px; }
+    .tag-filter{ background:#f3f4f6; color:#1f2937; border-radius:999px; padding:6px 12px; border:1px solid transparent; }
+    .tag-filter.active{ background:#2563eb; color:#fff; border-color:#1d4ed8; }
+    ul{ list-style:none; padding:0; }
+    li{ padding:12px; border:1px solid #eee; border-radius:10px; margin:8px 0; background:rgba(255,255,255,.75);
+        box-shadow:0 1px 3px rgba(15,23,42,.08); }
+    .item-actions{ display:flex; gap:8px; margin-top:12px; }
+    .tags{ font-size:12px; color:#4b5563; text-transform:uppercase; letter-spacing:.08em; }
+    .empty{ text-align:center; color:#6b7280; font-style:italic; background:transparent; box-shadow:none; border-style:dashed; }
 
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 12px;
-    }
-
-    form {
-      display: grid;
-      gap: 12px;
-      margin: 16px 0;
-    }
-
-    input,
-    textarea {
-      padding: 10px;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      font: inherit;
-    }
-
-    textarea {
-      resize: vertical;
-    }
-
-    button {
-      padding: 10px 14px;
-      border: 0;
-      border-radius: 10px;
-      cursor: pointer;
-      font: inherit;
-      background: #2563eb;
-      color: white;
-      transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
-    }
-
-    button:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 6px 18px rgba(37, 99, 235, 0.25);
-    }
-
-    button:disabled {
-      opacity: 0.6;
-      cursor: progress;
-      box-shadow: none;
-    }
-
-    button.secondary {
-      background: #e5e7eb;
-      color: #111827;
-    }
-
-    button.danger {
-      background: #dc2626;
-    }
-
-    .form-actions {
-      display: flex;
-      gap: 8px;
-      justify-content: flex-end;
-    }
-
-    .header-actions {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      align-items: center;
-    }
-
-    .sr-only {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      margin: -1px;
-      overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-      white-space: nowrap;
-      border: 0;
-    }
-
-    #search {
-      margin: 12px 0;
-    }
-
-    #tagFilters {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 12px;
-    }
-
-    .tag-filter {
-      background: #f3f4f6;
-      color: #1f2937;
-      border-radius: 999px;
-      padding: 6px 12px;
-      border: 1px solid transparent;
-    }
-
-    .tag-filter.active {
-      background: #2563eb;
-      color: white;
-      border-color: #1d4ed8;
-    }
-
-    ul {
-      list-style: none;
-      padding: 0;
-    }
-
-    li {
-      padding: 12px;
-      border: 1px solid #eee;
-      border-radius: 10px;
-      margin: 8px 0;
-      background: rgba(255, 255, 255, 0.75);
-      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
-    }
-
-    .item-actions {
-      display: flex;
-      gap: 8px;
-      margin-top: 12px;
-    }
-
-    .tags {
-      font-size: 12px;
-      color: #4b5563;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-    }
-
-    .empty {
-      text-align: center;
-      color: #6b7280;
-      font-style: italic;
-      background: transparent;
-      box-shadow: none;
-      border-style: dashed;
-    }
-
-    @media (prefers-color-scheme: dark) {
-      body {
-        background: #0f172a;
-        color: #f8fafc;
-      }
-
-      input,
-      textarea {
-        background: #0f172a;
-        color: inherit;
-        border-color: #1e293b;
-      }
-
-      li {
-        background: rgba(15, 23, 42, 0.85);
-        border-color: #1e293b;
-      }
-
-      .tags {
-        color: #cbd5f5;
-      }
-
-      .tag-filter {
-        background: rgba(148, 163, 184, 0.35);
-        color: #e2e8f0;
-      }
+    @media (prefers-color-scheme: dark){
+      body{ background:#0f172a; color:#f8fafc; }
+      input,textarea{ background:#0f172a; color:inherit; border-color:#1e293b; }
+      li{ background:rgba(15,23,42,.85); border-color:#1e293b; }
+      .tags{ color:#cbd5f5; }
+      .tag-filter{ background:rgba(148,163,184,.35); color:#e2e8f0; }
     }
   </style>
 </head>
@@ -201,7 +49,6 @@
 
 <header>
   <h1>Aaron’s Glossary</h1>
-  <div>
   <div class="header-actions">
     <button id="importExcel" type="button" class="secondary">Import Excel</button>
     <input id="excelFile" type="file" accept=".xlsx,.xls,.csv" class="sr-only" />
@@ -216,7 +63,6 @@
   <textarea id="definition" placeholder="Definition" rows="4" required></textarea>
   <textarea id="notes" placeholder="Notes (optional)" rows="2"></textarea>
   <input id="tags" placeholder="Tags (comma-separated)" />
-  <button type="submit">Save</button>
   <div class="form-actions">
     <button type="submit" id="submitBtn">Save</button>
     <button type="button" id="cancelEdit" class="secondary" style="display:none;">Cancel</button>
@@ -228,19 +74,17 @@
 <ul id="list"></ul>
 
 <script type="module">
-
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
-  import { getAuth, GoogleAuthProvider, signInWithPopup, signInAnonymously, onAuthStateChanged, signOut }
-    from "https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js";
-  import { getFirestore, collection, addDoc, serverTimestamp,
-           onSnapshot, query, orderBy, doc, deleteDoc }
-           onSnapshot, query, orderBy, doc, deleteDoc, updateDoc }
-    from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
-  // Use the public jsDelivr ESM build because the SheetJS CDN now requires authentication
-  // and prevents the rest of the app (including auth) from loading when it fails.
+  import {
+    getAuth, GoogleAuthProvider, signInWithPopup, signInAnonymously, onAuthStateChanged, signOut
+  } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js";
+  import {
+    getFirestore, collection, addDoc, serverTimestamp,
+    onSnapshot, query, orderBy, doc, deleteDoc, updateDoc
+  } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
   import * as XLSX from "https://cdn.jsdelivr.net/npm/xlsx@0.19.3/+esm";
 
-  // ✅ INSERT YOUR CONFIG HERE
+  // 🔧 YOUR FIREBASE CONFIG
   const firebaseConfig = {
     apiKey: "AIzaSyDMiNg7Uv4HcEm_zJQ0ZuwVztUGIquYr7E",
     authDomain: "wigleyglossary.firebaseapp.com",
@@ -255,6 +99,7 @@
   const auth = getAuth(app);
   const db   = getFirestore(app);
 
+  // UI refs
   const btnSignIn = document.getElementById('signin');
   const btnSignOut = document.getElementById('signout');
   const btnImport = document.getElementById('importExcel');
@@ -280,61 +125,47 @@
   btnImport.disabled = true;
   btnExport.disabled = true;
 
-  function escapeHtml(input) {
-    const str = String(input ?? "");
-    return str
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#39;");
-  }
+  // ----- helpers -----
+  const esc = s => String(s ?? "")
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;").replace(/'/g,"&#39;");
 
-  function linkify(input) {
-    const urlPattern = /(https?:\/\/[^\s<]+)/g;
-    return String(input).replace(urlPattern, url => {
-      const safeUrl = url.replace(/"/g, "&quot;");
-      return `<a href="${safeUrl}" target="_blank" rel="noopener">${safeUrl}</a>`;
-    });
-  }
+  const linkify = input =>
+    String(input ?? "").replace(/(https?:\/\/[^\s<]+)/g, url =>
+      `<a href="${url.replace(/"/g,"&quot;")}" target="_blank" rel="noopener">${url}</a>`
+    );
 
-  function formatRichText(text, { italic = false } = {}) {
-    const safe = escapeHtml(text ?? "");
-    const html = linkify(safe).replace(/\n/g, "<br/>");
+  const rich = (text, {italic=false}={}) => {
+    const html = linkify(esc(text)).replace(/\n/g,"<br/>");
     return italic ? `<em>${html}</em>` : html;
-  }
+  };
 
-  function uniqueTags() {
-    const tagSet = new Set();
-    for (const entry of items) {
-      for (const tag of entry.tags || []) tagSet.add(tag);
-    }
-    return Array.from(tagSet).sort((a, b) => a.localeCompare(b));
-  }
+  const uniqueTags = () => {
+    const set = new Set();
+    for (const e of items) (e.tags||[]).forEach(t => set.add(t));
+    return [...set].sort((a,b)=>a.localeCompare(b));
+  };
 
   function renderTagFilters() {
     const tags = uniqueTags();
-    if (selectedTag && !tags.includes(selectedTag)) {
-      selectedTag = null;
-    }
     tagFilters.innerHTML = "";
     tagFilters.style.display = tags.length ? "flex" : "none";
 
     if (!tags.length) return;
 
-    const clearBtn = document.createElement('button');
-    clearBtn.type = "button";
-    clearBtn.textContent = "All tags";
-    clearBtn.className = `tag-filter${selectedTag ? "" : " active"}`;
-    clearBtn.dataset.tag = "";
-    tagFilters.appendChild(clearBtn);
+    const allBtn = document.createElement("button");
+    allBtn.type = "button";
+    allBtn.textContent = "All tags";
+    allBtn.className = `tag-filter${selectedTag ? "" : " active"}`;
+    allBtn.dataset.tag = "";
+    tagFilters.appendChild(allBtn);
 
-    for (const tag of tags) {
-      const btn = document.createElement('button');
+    for (const t of tags) {
+      const btn = document.createElement("button");
       btn.type = "button";
-      btn.textContent = tag;
-      btn.className = `tag-filter${selectedTag === tag ? " active" : ""}`;
-      btn.dataset.tag = tag;
+      btn.textContent = t;
+      btn.className = `tag-filter${selectedTag===t ? " active" : ""}`;
+      btn.dataset.tag = t;
       tagFilters.appendChild(btn);
     }
   }
@@ -356,28 +187,30 @@
     btnSubmit.textContent = "Update";
     btnCancelEdit.style.display = "inline-flex";
     termInput.focus();
-    termInput.scrollIntoView({ behavior: "smooth", block: "center" });
+    termInput.scrollIntoView({behavior:"smooth", block:"center"});
   }
 
   function render() {
     const q = search.value.trim().toLowerCase();
-    const filtered = !q ? items : items.filter(e =>
-      e.term.toLowerCase().includes(q) ||
-      e.definition.toLowerCase().includes(q) ||
-      (e.notes||"").toLowerCase().includes(q) ||
-      e.tags.join(" ").toLowerCase().includes(q)
-    );
+
+    const filtered = items.filter(e => {
+      const hit =
+        e.term.toLowerCase().includes(q) ||
+        e.definition.toLowerCase().includes(q) ||
+        (e.notes||"").toLowerCase().includes(q) ||
+        e.tags.join(" ").toLowerCase().includes(q);
+      return hit;
+    });
 
     const finalList = selectedTag
-      ? filtered.filter(entry => entry.tags.includes(selectedTag))
+      ? filtered.filter(e => (e.tags||[]).includes(selectedTag))
       : filtered;
 
     btnExport.disabled = !uid || !items.length;
 
     list.innerHTML = "";
-    for (const e of filtered) {
     if (!finalList.length) {
-      const li = document.createElement('li');
+      const li = document.createElement("li");
       li.className = "empty";
       li.textContent = items.length
         ? "No entries match your search or filters yet."
@@ -387,33 +220,16 @@
     }
 
     for (const e of finalList) {
-      const termHtml = escapeHtml(e.term);
-      const definitionHtml = formatRichText(e.definition || "");
-      const notesHtml = e.notes
-        ? `${formatRichText(e.notes, { italic: true })}<br/>`
-        : "";
-      const tagsHtml = (e.tags && e.tags.length)
-        ? `<span class="tags">Tags: ${e.tags.map(tag => escapeHtml(tag)).join(", ")}</span>`
-        : "";
-      const needsBreakAfterDefinition = Boolean(notesHtml || tagsHtml);
-
-      const li = document.createElement('li');
+      const li = document.createElement("li");
       li.innerHTML = `
-        <strong>${e.term}</strong><br/>
-        ${e.definition}<br/>
-        ${e.notes ? "<em>"+e.notes+"</em><br/>" : ""}
-        ${e.tags.length ? `<span class="tags">Tags: ${e.tags.join(", ")}</span>` : ""}
-        <div style="margin-top:8px">
-          <button data-del="${e.id}">Delete</button>
-        <strong>${termHtml}</strong><br/>
-        ${definitionHtml}${needsBreakAfterDefinition ? "<br/>" : ""}
-        ${notesHtml}
-        ${tagsHtml}
+        <strong>${esc(e.term)}</strong><br/>
+        ${rich(e.definition)}<br/>
+        ${e.notes ? `${rich(e.notes,{italic:true})}<br/>` : ""}
+        ${(e.tags && e.tags.length) ? `<span class="tags">Tags: ${e.tags.map(esc).join(", ")}</span>` : ""}
         <div class="item-actions">
           <button type="button" data-edit="${e.id}" class="secondary">Edit</button>
           <button type="button" data-del="${e.id}" class="danger">Delete</button>
-        </div>
-      `;
+        </div>`;
       list.appendChild(li);
     }
   }
@@ -421,8 +237,10 @@
   function startListener() {
     if (!uid) return;
     if (unsubscribe) unsubscribe();
+
     const col = collection(db, "users", uid, "entries");
     const qy  = query(col, orderBy("term"));
+
     unsubscribe = onSnapshot(qy, snap => {
       items = snap.docs.map(d => ({ id: d.id, ...d.data(), tags: d.data().tags || [] }));
       renderTagFilters();
@@ -430,26 +248,18 @@
     });
   }
 
+  // ----- auth -----
   onAuthStateChanged(auth, user => {
     uid = user ? user.uid : null;
+
     btnSignIn.style.display = user ? "none" : "inline-block";
     btnSignOut.style.display = user ? "inline-block" : "none";
     btnImport.disabled = !user;
     btnExport.disabled = !user || !items.length;
 
-    if (unsubscribe) {
-      unsubscribe();
-      unsubscribe = null;
-    }
+    if (unsubscribe) { unsubscribe(); unsubscribe = null; }
 
-    if (!uid) {
-      items = [];
-      cancelEdit();
-      renderTagFilters();
-      render();
-      return;
-    }
-
+    if (!uid) { items = []; cancelEdit(); renderTagFilters(); render(); return; }
     startListener();
   });
 
@@ -458,173 +268,101 @@
       await signInWithPopup(auth, new GoogleAuthProvider()).catch(async () => {
         await signInAnonymously(auth);
       });
-    } catch (e) {
-      alert("Sign-in failed: " + e.message);
-    }
+    } catch (e) { alert("Sign-in failed: " + e.message); }
   };
   btnSignOut.onclick = () => signOut(auth);
-
   btnCancelEdit.onclick = () => cancelEdit();
 
-  btnImport.onclick = () => {
-    if (!uid) {
-      alert("Please sign in first.");
-      return;
-    }
-    fileInput.click();
-  };
+  // ----- import / export -----
+  btnImport.onclick = () => { if (!uid) return alert("Please sign in first."); fileInput.click(); };
 
   btnExport.onclick = () => {
-    if (!uid) {
-      alert("Please sign in first.");
-      return;
-    }
-    if (!items.length) {
-      alert("No entries to export yet.");
-      return;
-    }
+    if (!uid) return alert("Please sign in first.");
+    if (!items.length) return alert("No entries to export yet.");
 
-    const rows = items.map(entry => ({
-      Term: entry.term,
-      Definition: entry.definition,
-      Notes: entry.notes || "",
-      Tags: (entry.tags || []).join(", ")
+    const rows = items.map(e => ({
+      Term: e.term, Definition: e.definition, Notes: e.notes || "", Tags: (e.tags||[]).join(", ")
     }));
-
-    const workbook = XLSX.utils.book_new();
-    const worksheet = XLSX.utils.json_to_sheet(rows);
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Glossary");
-    const date = new Date().toISOString().slice(0, 10);
-    XLSX.writeFile(workbook, `glossary-${date}.xlsx`);
+    const book = XLSX.utils.book_new();
+    const sheet = XLSX.utils.json_to_sheet(rows);
+    XLSX.utils.book_append_sheet(book, sheet, "Glossary");
+    const date = new Date().toISOString().slice(0,10);
+    XLSX.writeFile(book, `glossary-${date}.xlsx`);
   };
 
   fileInput.onchange = async () => {
     const file = fileInput.files[0];
     if (!file) return;
-    if (!uid) {
-      alert("Please sign in first.");
-      fileInput.value = "";
-      return;
-    }
+    if (!uid) { alert("Please sign in first."); fileInput.value = ""; return; }
 
-    const originalText = btnImport.textContent;
-    btnImport.disabled = true;
-    btnImport.textContent = "Importing…";
+    const original = btnImport.textContent;
+    btnImport.disabled = true; btnImport.textContent = "Importing…";
 
     try {
       const data = await file.arrayBuffer();
-      const workbook = XLSX.read(data, { type: "array" });
-      if (!workbook.SheetNames.length) {
-        alert("No sheets found in this file.");
-        return;
-      }
+      const book = XLSX.read(data, { type: "array" });
+      if (!book.SheetNames.length) return alert("No sheets found in this file.");
 
-      const sheet = workbook.Sheets[workbook.SheetNames[0]];
+      const sheet = book.Sheets[book.SheetNames[0]];
       const rows = XLSX.utils.sheet_to_json(sheet, { defval: "" });
-      if (!rows.length) {
-        alert("No data found in the first sheet.");
-        return;
-      }
+      if (!rows.length) return alert("No data found in the first sheet.");
 
-      let created = 0;
-      let failed = 0;
+      let created = 0, failed = 0;
       for (const row of rows) {
-        const normalized = Object.fromEntries(
-          Object.entries(row).map(([key, value]) => [key.trim().toLowerCase(), value])
-        );
-
-        const term = String(normalized.term ?? "").trim();
-        const definition = String(normalized.definition ?? "").trim();
-        const notes = String(normalized.notes ?? "").trim();
-        const tagsRaw = String(normalized.tags ?? "").trim();
-
+        const map = Object.fromEntries(Object.entries(row).map(([k,v]) => [String(k).trim().toLowerCase(), v]));
+        const term = String(map.term ?? "").trim();
+        const definition = String(map.definition ?? "").trim();
+        const notes = String(map.notes ?? "").trim();
+        const tagsRaw = String(map.tags ?? "").trim();
         if (!term || !definition) continue;
 
-        const tags = tagsRaw
-          ? tagsRaw.split(/[,;]/).map(tag => tag.trim()).filter(Boolean)
-          : [];
-
+        const tags = tagsRaw ? tagsRaw.split(/[,;]/).map(s=>s.trim()).filter(Boolean) : [];
         try {
-          await addDoc(collection(db, "users", uid, "entries"), {
-            term,
-            definition,
-            notes: notes || null,
-            tags,
-            createdAt: serverTimestamp(),
-            updatedAt: serverTimestamp()
+          await addDoc(collection(db,"users",uid,"entries"), {
+            term, definition, notes: notes || null, tags,
+            createdAt: serverTimestamp(), updatedAt: serverTimestamp()
           });
           created++;
-        } catch (err) {
-          console.error("Failed to import row", row, err);
-          failed++;
-        }
+        } catch (err) { console.error("Row failed", row, err); failed++; }
       }
 
-      if (!created && !failed) {
-        alert("No valid rows found to import.");
-      } else if (failed && created) {
-        alert(`Imported ${created} entr${created === 1 ? "y" : "ies"}, ${failed} row${failed === 1 ? "" : "s"} failed. Check the console for details.`);
-      } else if (failed && !created) {
-        alert("Import failed for all rows. Check the console for details.");
-      } else {
-        alert(`Imported ${created} entr${created === 1 ? "y" : "ies"} successfully.`);
-      }
+      if (!created && !failed) alert("No valid rows found to import.");
+      else if (failed && created) alert(`Imported ${created}, ${failed} failed. Check console.`);
+      else if (failed && !created) alert("Import failed for all rows. Check console.");
+      else alert(`Imported ${created} successfully.`);
     } catch (e) {
-      console.error(e);
-      alert("Import failed: " + e.message);
+      console.error(e); alert("Import failed: " + e.message);
     } finally {
-      btnImport.textContent = originalText;
+      btnImport.textContent = original;
       btnImport.disabled = !uid;
       fileInput.value = "";
     }
   };
 
+  // ----- add / edit / delete -----
   form.onsubmit = async ev => {
     ev.preventDefault();
-    if (!uid) { alert("Please sign in first."); return; }
+    if (!uid) return alert("Please sign in first.");
 
-    const term        = document.getElementById('term').value.trim();
-    const definition  = document.getElementById('definition').value.trim();
-    const notes       = document.getElementById('notes').value.trim();
-    const tags        = document.getElementById('tags').value.split(",").map(x => x.trim()).filter(x => x);
-
-    await addDoc(collection(db, "users", uid, "entries"), {
-      term, definition,
-      notes: notes || null,
-      tags,
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp()
-    });
-    const term        = termInput.value.trim();
-    const definition  = definitionInput.value.trim();
-    const notes       = notesInput.value.trim();
-    const tags        = tagsInput.value.split(",").map(x => x.trim()).filter(x => x);
-
-    form.reset();
+    const term = termInput.value.trim();
+    const definition = definitionInput.value.trim();
+    const notes = notesInput.value.trim();
+    const tags = tagsInput.value.split(",").map(s=>s.trim()).filter(Boolean);
     if (!term || !definition) return;
 
     btnSubmit.disabled = true;
 
     try {
       if (editingId) {
-        await updateDoc(doc(db, "users", uid, "entries", editingId), {
-          term,
-          definition,
-          notes: notes || null,
-          tags,
-          updatedAt: serverTimestamp()
+        await updateDoc(doc(db,"users",uid,"entries",editingId), {
+          term, definition, notes: notes || null, tags, updatedAt: serverTimestamp()
         });
       } else {
-        await addDoc(collection(db, "users", uid, "entries"), {
-          term,
-          definition,
-          notes: notes || null,
-          tags,
-          createdAt: serverTimestamp(),
-          updatedAt: serverTimestamp()
+        await addDoc(collection(db,"users",uid,"entries"), {
+          term, definition, notes: notes || null, tags,
+          createdAt: serverTimestamp(), updatedAt: serverTimestamp()
         });
       }
-
       cancelEdit();
     } catch (e) {
       alert("Could not save entry: " + e.message);
@@ -634,28 +372,21 @@
 
   list.onclick = async ev => {
     const editId = ev.target.getAttribute("data-edit");
-    if (editId) {
-      const entry = items.find(item => item.id === editId);
-      if (entry) beginEdit(entry);
-      return;
-    }
+    if (editId) { const entry = items.find(it => it.id === editId); if (entry) beginEdit(entry); return; }
 
     const id = ev.target.getAttribute("data-del");
     if (!id) return;
     if (!confirm("Delete this entry?")) return;
-    await deleteDoc(doc(db, "users", uid, "entries", id));
+    await deleteDoc(doc(db,"users",uid,"entries",id));
   };
 
   search.oninput = render;
-
   tagFilters.onclick = ev => {
-    const tag = ev.target.dataset.tag;
+    const tag = ev.target?.dataset?.tag;
     if (tag === undefined) return;
     selectedTag = tag || null;
-    renderTagFilters();
-    render();
+    renderTagFilters(); render();
   };
-
 </script>
 </body>
 </html>
