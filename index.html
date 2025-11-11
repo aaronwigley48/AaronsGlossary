@@ -236,7 +236,9 @@
            onSnapshot, query, orderBy, doc, deleteDoc }
            onSnapshot, query, orderBy, doc, deleteDoc, updateDoc }
     from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
-  import * as XLSX from "https://cdn.sheetjs.com/xlsx-0.20.0/package/xlsx.mjs";
+  // Use the public jsDelivr ESM build because the SheetJS CDN now requires authentication
+  // and prevents the rest of the app (including auth) from loading when it fails.
+  import * as XLSX from "https://cdn.jsdelivr.net/npm/xlsx@0.19.3/+esm";
 
   // ✅ INSERT YOUR CONFIG HERE
   const firebaseConfig = {
