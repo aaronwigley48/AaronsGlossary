@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Aaron’s Glossary</title>
+  <style>
+    body{font-family:system-ui,Segoe UI,Arial,sans-serif;max-width:760px;margin:24px auto;padding:0 16px}
+    header{display:flex;justify-content:space-between;align-items:center;gap:12px}
+    form{display:grid;gap:8px;margin:16px 0}
+    input,textarea{padding:10px;border:1px solid #ddd;border-radius:8px}
+    button{padding:10px 14px;border:0;border-radius:10px;cursor:pointer}
+    ul{list-style:none;padding:0}
+    li{padding:12px;border:1px solid #eee;border-radius:10px;margin:8px 0}
+    .tags{font-size:12px;color:#666}
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Aaron’s Glossary</h1>
+  <div>
+    <button id="signin">Sign in</button>
+    <button id="signout" style="display:none;">Sign out</button>
+  </div>
+</header>
+
+<form id="entryForm">
+  <input id="term" placeholder="Term (e.g. Epikarst)" required />
+  <textarea id="definition" placeholder="Definition" rows="4" required></textarea>
+  <textarea id="notes" placeholder="Notes (optional)" rows="2"></textarea>
+  <input id="tags" placeholder="Tags (comma-separated)" />
+  <button type="submit">Save</button>
+</form>
+
+<input id="search" placeholder="Search…" />
+<ul id="list"></ul>
+
+<script type="module">
+
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+  import { getAuth, GoogleAuthProvider, signInWithPopup, signInAnonymously, onAuthStateChanged, signOut }
+    from "https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js";
+  import { getFirestore, collection, addDoc, serverTimestamp,
+           onSnapshot, query, orderBy, doc, deleteDoc }
+    from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
+
+  // ✅ INSERT YOUR CONFIG HERE
+  const firebaseConfig = {
+    apiKey: "AIzaSyDMiNg7Uv4HcEm_zJQ0ZuwVztUGIquYr7E",
+    authDomain: "wigleyglossary.firebaseapp.com",
+    projectId: "wigleyglossary",
+    storageBucket: "wigleyglossary.appspot.com",
+    messagingSenderId: "613114856859",
+    appId: "1:613114586589:web:47a746c83dfd7f7d10cd3e",
+    measurementId: "G-8QL63QGGX1"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db   = getFirestore(app);
+
+  const btnSignIn = document.getElementById('signin');
+  const btnSignOut = document.getElementById('signout');
+  const form = document.getElementById('entryForm');
+  const list = document.getElementById('list');
+  const search = document.getElementById('search');
+
+  let uid = null;
+  let unsubscribe = null;
+  let items = [];
+
+  function render() {
+    const q = search.value.trim().toLowerCase();
+    const filtered = !q ? items : items.filter(e =>
+      e.term.toLowerCase().includes(q) ||
+      e.definition.toLowerCase().includes(q) ||
+      (e.notes||"").toLowerCase().includes(q) ||
+      e.tags.join(" ").toLowerCase().includes(q)
+    );
+
+    list.innerHTML = "";
+    for (const e of filtered) {
+      const li = document.createElement('li');
+      li.innerHTML = `
+        <strong>${e.term}</strong><br/>
+        ${e.definition}<br/>
+        ${e.notes ? "<em>"+e.notes+"</em><br/>" : ""}
+        ${e.tags.length ? `<span class="tags">Tags: ${e.tags.join(", ")}</span>` : ""}
+        <div style="margin-top:8px">
+          <button data-del="${e.id}">Delete</button>
+        </div>
+      `;
+      list.appendChild(li);
+    }
+  }
+
+  function startListener() {
+    if (!uid) return;
+    if (unsubscribe) unsubscribe();
+    const col = collection(db, "users", uid, "entries");
+    const qy  = query(col, orderBy("term"));
+    unsubscribe = onSnapshot(qy, snap => {
+      items = snap.docs.map(d => ({ id: d.id, ...d.data(), tags: d.data().tags || [] }));
+      render();
+    });
+  }
+
+  onAuthStateChanged(auth, user => {
+    uid = user ? user.uid : null;
+    btnSignIn.style.display = user ? "none" : "inline-block";
+    btnSignOut.style.display = user ? "inline-block" : "none";
+    startListener();
+  });
+
+  btnSignIn.onclick = async () => {
+    try {
+      await signInWithPopup(auth, new GoogleAuthProvider()).catch(async () => {
+        await signInAnonymously(auth);
+      });
+    } catch (e) {
+      alert("Sign-in failed: " + e.message);
+    }
+  };
+  btnSignOut.onclick = () => signOut(auth);
+
+  form.onsubmit = async ev => {
+    ev.preventDefault();
+    if (!uid) { alert("Please sign in first."); return; }
+
+    const term        = document.getElementById('term').value.trim();
+    const definition  = document.getElementById('definition').value.trim();
+    const notes       = document.getElementById('notes').value.trim();
+    const tags        = document.getElementById('tags').value.split(",").map(x => x.trim()).filter(x => x);
+
+    await addDoc(collection(db, "users", uid, "entries"), {
+      term, definition,
+      notes: notes || null,
+      tags,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp()
+    });
+
+    form.reset();
+  };
+
+  list.onclick = async ev => {
+    const id = ev.target.getAttribute("data-del");
+    if (!id) return;
+    if (!confirm("Delete this entry?")) return;
+    await deleteDoc(doc(db, "users", uid, "entries", id));
+  };
+
+  search.oninput = render;
+
+</script>
+</body>
+</html>
